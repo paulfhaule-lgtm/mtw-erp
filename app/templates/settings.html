@@ -1,0 +1,21 @@
+{% extends 'base.html' %}{% block content %}
+<h1>Settings 🔐 — MD Only</h1>
+<p>Only Managing Director can change company settings, logo and stamp.</p>
+<form method="post" enctype="multipart/form-data">
+<div class="grid">
+<label>Company Name<input name="company_name" value="{{cfg.get('company_name','')}}"></label>
+<label>Phone<input name="phone" value="{{cfg.get('phone','')}}"></label>
+<label>Email<input name="email" value="{{cfg.get('email','')}}"></label>
+<label>TIN<input name="tin" value="{{cfg.get('tin','')}}"></label>
+<label>VRN<input name="vrn" value="{{cfg.get('vrn','')}}"></label>
+<label>Address<textarea name="address">{{cfg.get('address','')}}</textarea></label>
+<label>Company Logo<input type="file" name="logo" accept="image/png,image/jpeg,image/webp"></label>
+<label>Company Stamp<input type="file" name="stamp" accept="image/png,image/jpeg,image/webp"></label>
+</div>
+<button>Save Settings</button>
+</form>
+<div class="grid" style="margin-top:16px">
+{% if cfg.get('logo_path') %}<div class="panel"><b>Current Logo</b><br><img src="{{url_for('uploads',filename=cfg.get('logo_path'))}}" style="max-width:260px;max-height:140px;margin-top:10px"></div>{% endif %}
+{% if cfg.get('stamp_path') %}<div class="panel"><b>Current Stamp</b><br><img src="{{url_for('uploads',filename=cfg.get('stamp_path'))}}" style="max-width:180px;max-height:140px;margin-top:10px"></div>{% endif %}
+</div>
+{% endblock %}
