@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block content %}
+<h1>Payroll & Statutory Deductions</h1>
+<div class="grid">
+<div class="card"><h3>Statutory Settings</h3><form method="post" action="{{url_for('payroll_settings')}}" class="form">
+<label>Effective From</label><input type="date" name="effective_from" value="{{st.effective_from or today}}">
+<label>NSSF Employee %</label><input type="number" step="0.001" name="nssf_employee_rate" value="{{st.nssf_employee_rate}}">
+<label>NSSF Employer %</label><input type="number" step="0.001" name="nssf_employer_rate" value="{{st.nssf_employer_rate}}">
+<label>SDL %</label><input type="number" step="0.001" name="sdl_rate" value="{{st.sdl_rate}}">
+<label>WCF %</label><input type="number" step="0.001" name="wcf_rate" value="{{st.wcf_rate}}">
+<label><input type="checkbox" name="paye_enabled" {% if st.paye_enabled %}checked{% endif %}> PAYE enabled</label>
+<p class="muted">PAYE amount inaweza kuingizwa kwenye payroll kulingana na tax calculation/rules utakazotumia; rates za NSSF, SDL na WCF zinaweza kubadilishwa hapa.</p><button>Save Statutory Settings</button></form></div>
+<div class="card"><h3>Record Payroll</h3><form method="post" action="{{url_for('payroll_new')}}" class="form">
+<label>Person</label><select name="worker_id" required><option value="">Select</option>{% for w in workers %}<option value="{{w.id}}">{{w.name}} — {{w.worker_type}}</option>{% endfor %}</select>
+<label>Period</label><input name="period" placeholder="2026-10" required><label>Pay Date</label><input type="date" name="pay_date" value="{{today}}"><label>Gross Salary</label><input type="number" step="0.01" name="gross" required>
+<label>PAYE</label><input type="number" step="0.01" name="paye" value="0"><label>Loan Deduction</label><input type="number" step="0.01" name="loan_deduction" value="0"><label>Other Deduction</label><input type="number" step="0.01" name="other_deduction" value="0"><label>Paid</label><input type="number" step="0.01" name="paid" value="0"><button>Record Payroll</button></form></div></div>
+<h2>Payroll Register</h2><table><tr><th>Date</th><th>Period</th><th>Person</th><th>Gross</th><th>PAYE</th><th>NSSF Emp.</th><th>Loan</th><th>Other</th><th>Net</th><th>NSSF Employer</th><th>SDL</th><th>WCF</th><th>Employer Cost</th><th>Paid</th><th>Balance</th></tr>{% for r in rows %}<tr><td>{{r.pay_date}}</td><td>{{r.period}}</td><td>{{r.worker.name}}</td><td>{{'{:,.2f}'.format(r.gross)}}</td><td>{{'{:,.2f}'.format(r.paye)}}</td><td>{{'{:,.2f}'.format(r.nssf_employee)}}</td><td>{{'{:,.2f}'.format(r.loan_deduction)}}</td><td>{{'{:,.2f}'.format(r.other_deduction)}}</td><td>{{'{:,.2f}'.format(r.net)}}</td><td>{{'{:,.2f}'.format(r.nssf_employer)}}</td><td>{{'{:,.2f}'.format(r.sdl)}}</td><td>{{'{:,.2f}'.format(r.wcf)}}</td><td>{{'{:,.2f}'.format(r.employer_cost)}}</td><td>{{'{:,.2f}'.format(r.paid)}}</td><td>{{'{:,.2f}'.format(r.net-r.paid)}}</td></tr>{% endfor %}</table>
+{% endblock %}
